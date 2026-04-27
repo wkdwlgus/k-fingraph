@@ -70,5 +70,6 @@ Streamlit으로 그래프 시각화. 7일.
 
 ## Blocked / Questions
 
-- Neo4j Aura Free 인스턴스 생성 + DART OpenAPI 키 발급은 사용자 측 외부 작업.
-  완료 시 핑 테스트 후 체크. Day 2 진입 전제.
+- Neo4j Aura 인스턴스 생성 + DART OpenAPI 키 발급 완료, `.env`에 주입됨.
+- "연결 핑" 체크박스 2개는 미체크 유지 — 별도 핑 스크립트를 만들기보다
+  Day 2의 DART 클라이언트 코드 + e2e 테스트에서 실제 호출로 검증한다.

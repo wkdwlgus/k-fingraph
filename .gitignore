@@ -1,0 +1,41 @@
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Local data
+data/raw/
+data/interim/
+data/processed/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+build/
+dist/
+.eggs/
+
+# venv / uv
+.venv/
+.python-version-local
+
+# Tooling caches
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+htmlcov/
+.coverage
+.coverage.*
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+
+# Notebooks scratch
+.ipynb_checkpoints/
+
+# Logs
+*.log

@@ -54,7 +54,7 @@ Streamlit으로 그래프 시각화. 7일.
 
 ## Day 7: 마감
 
-- [ ] README.md 업데이트 (스크린샷, 사용 예시)
+- [ ] README.md 최종 정리 (스크린샷·실제 사용 예시 추가, v0 완료 상태 반영)
 - [ ] `docs/troubleshooting.md`에 부딪힌 문제 ≥ 1개 기록
 - [ ] `docs/progress.md`에 v0 완료 기록
 - [ ] git tag `v0.1.0`

@@ -10,6 +10,15 @@
 - ADR 0001~0003 작성 (uv / Neo4j Aura→Docker / GPT-4o-mini)
 - 다음: dev 환경 셋업 (Day 1)
 
+## 2026-04-28 (Day 1)
+
+- 코드 스캐폴딩 완료 (`pyproject.toml` + `uv.lock`, ruff/mypy/pytest 설정)
+- `src/k_fingraph/` 모듈 골격 생성 (config, errors + 7개 서브패키지 빈 `__init__.py`)
+- `.env.example` + `tests/unit/test_smoke.py` 추가, 스모크 테스트 통과
+- README 작성 + handoff 프로토콜에 README 동기화 단계 편입
+- 남은 Day 1 항목: Neo4j Aura Free 인스턴스 + DART OpenAPI 키 발급(외부 작업)
+- 다음: Day 2 — DART corp_code 다운로드 + KOSPI 200 매핑 (외부 키 발급 후 진입)
+
 ## 다음 마일스톤
 
 - [ ] **v0 (MVP-zero)**: KOSPI 200 노드 + 지분 엣지 + Cypher 3개 통과 + Streamlit 시각화 (목표 7일)

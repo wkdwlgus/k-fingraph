@@ -5,14 +5,14 @@ Streamlit으로 그래프 시각화. 7일.
 
 ## Day 1: 환경 셋업
 
-- [ ] uv init, pyproject.toml, 의존성 설치
-- [ ] ruff/mypy/pytest 설정
-- [ ] `.env.example` + `config.py`
+- [x] uv init, pyproject.toml, 의존성 설치
+- [x] ruff/mypy/pytest 설정
+- [x] `.env.example` + `config.py`
 - [ ] Neo4j Aura Free 인스턴스 생성, 연결 핑
 - [ ] DART OpenAPI 키 발급, 핑 테스트
-- [ ] 스모크 테스트 통과
-- [ ] GitHub repo public 생성, 초기 푸시
-- [ ] Day 1 회고 + progress.md 업데이트
+- [x] 스모크 테스트 통과 (`tests/unit/test_smoke.py`)
+- [x] GitHub repo public 생성, 초기 푸시
+- [x] Day 1 회고 + progress.md 업데이트
 
 ## Day 2: DART 데이터 학습 + 수집
 
@@ -70,4 +70,5 @@ Streamlit으로 그래프 시각화. 7일.
 
 ## Blocked / Questions
 
-(없음)
+- Neo4j Aura Free 인스턴스 생성 + DART OpenAPI 키 발급은 사용자 측 외부 작업.
+  완료 시 핑 테스트 후 체크. Day 2 진입 전제.

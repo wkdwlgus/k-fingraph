@@ -63,5 +63,5 @@ CREATE INDEX company_name_normalized IF NOT EXISTS
 ## Open Questions (to resolve before v1)
 
 - 같은 회사의 지분율 변경을 어떻게 추적할 것인가? (시계열 엣지 vs 단일 엣지 + history)
-- 비상장 자회사(corp_code 없음)도 노드로 추가할 것인가?
+- 비상장 자회사(거래소 종목코드 없음, DART corp_code는 있음)도 노드로 추가할 것인가?
 - 외국 모회사(예: 삼성생명의 외국인 대주주)는 어떤 라벨로?

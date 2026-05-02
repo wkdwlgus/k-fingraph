@@ -42,6 +42,10 @@
 - Day 2 모든 항목 [x] 완료. 다음: Day 3 — Pydantic 스키마(`Company`,
   `OwnsRelation`, `DartReport`) + DART 사업보고서 → 지분 트리플 추출 함수
   + fixture 기반 단위 테스트
+- 핸드오프 직후 발견: `docs/architecture.md`가 임베딩 단계 누락·LLM 활성
+  시점 표시 누락·점진적 schema 확장 미반영으로 일부 stale. 다음 세션
+  첫 액션으로 정리하기로 결정 (`tasks/current.md`의 "다음 세션 첫 액션"
+  섹션 참조)
 
 ## 다음 마일스톤
 

@@ -22,6 +22,27 @@ Streamlit으로 그래프 시각화. 7일.
 - [x] DART 사업보고서 1~2건 직접 받아보고 지분 정보 위치 파악 (도메인 학습) — 5개 엔드포인트(공시검색·기업개황·최대주주·타법인 출자·5% 보고)를 삼성전자·SK하이닉스로 호출, 응답 구조·결측 패턴·날짜 포맷 혼재 관찰
 - [x] notebook에서 탐색 → 발견사항을 `docs/data-notes.md`에 기록 — notebook 대신 ad-hoc Python 스크립트로 탐색, 결과를 `docs/data-notes.md`에 (A)+(B 분리 대비) 설계로 정리, v3·v4·v5 미래 도구 API 카탈로그 포함
 
+## 다음 세션 첫 액션 (Day 3 진입 전 선행)
+
+- [ ] **`docs/architecture.md` 정리** — Day 2 핸드오프 직후 stale 부분 발견됨
+
+세 가지 gap을 같이 처리:
+
+1. **Ingestion 흐름에 임베딩 단계 명시 누락** — 현재 4번 "Entity Resolution"이
+   한 단어로만 적혀 있으나 실제로는 그 안에 텍스트 임베딩(엔티티 해소 sprint)이
+   핵심 도구. 또한 그래프 임베딩(유사 종목 sprint)이 다이어그램·흐름 어디에도
+   안 보임.
+2. **LLM 추출의 활성/비활성 시점 표시 누락** — 다이어그램이 "Extraction
+   Pipeline (LLM-based)"이 항상 켜진 것처럼 그려졌으나 본 v0에서는 LLM 비활성
+   (DART API가 정형 JSON 직접 제공). 뉴스 추출 sprint부터 활성화. 시점별 차이가
+   표현되어 있어야 함.
+3. **ADR 0005의 점진적 schema 확장이 반영 안 됨** — 다이어그램이 "최종 비전
+   미완성판" 같은 모호한 상태. 본 v0은 Company + OWNS만, 미래 도구 sprint
+   진입 시점에 Person·AuditFirm·Event 등이 추가된다는 흐름이 보여야 함.
+
+예상: 1~2시간. 완료 후 Day 3 첫 단위(Pydantic `Company`·`OwnsRelation`·
+`DartReport` + 사업보고서 → 트리플 추출 함수)로 진행.
+
 ## Day 3: 파싱 + Pydantic 스키마
 
 - [ ] Pydantic: `Company`, `OwnsRelation`, `DartReport`

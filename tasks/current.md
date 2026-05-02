@@ -19,8 +19,8 @@ Streamlit으로 그래프 시각화. 7일.
 - [x] DART corp_code 전체 다운로드, 구조 파악 (`src/k_fingraph/sources/dart.py` + 스키마)
 - [x] KOSPI 200 종목 리스트 확보 (KRX 또는 외부 source) — KRX 정보데이터시스템 CSV 수동 수집(2026-05-02 영업일 기준), `data/reference/kospi200.csv`로 저장
 - [x] KOSPI 200에 대해 corp_code 매핑 (`src/k_fingraph/sources/kospi200.py`, 실데이터 매칭률 200/200 = 100%)
-- [ ] DART 사업보고서 1~2건 직접 받아보고 지분 정보 위치 파악 (도메인 학습)
-- [ ] notebook에서 탐색 → 발견사항을 `docs/data-notes.md`에 기록
+- [x] DART 사업보고서 1~2건 직접 받아보고 지분 정보 위치 파악 (도메인 학습) — 5개 엔드포인트(공시검색·기업개황·최대주주·타법인 출자·5% 보고)를 삼성전자·SK하이닉스로 호출, 응답 구조·결측 패턴·날짜 포맷 혼재 관찰
+- [x] notebook에서 탐색 → 발견사항을 `docs/data-notes.md`에 기록 — notebook 대신 ad-hoc Python 스크립트로 탐색, 결과를 `docs/data-notes.md`에 (A)+(B 분리 대비) 설계로 정리, v3·v4·v5 미래 도구 API 카탈로그 포함
 
 ## Day 3: 파싱 + Pydantic 스키마
 

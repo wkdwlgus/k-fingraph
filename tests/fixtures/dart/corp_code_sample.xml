@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<result>
+    <list>
+        <corp_code>00126380</corp_code>
+        <corp_name>삼성전자</corp_name>
+        <corp_eng_name>SAMSUNG ELECTRONICS CO,.LTD</corp_eng_name>
+        <stock_code>005930</stock_code>
+        <modify_date>20230718</modify_date>
+    </list>
+    <list>
+        <corp_code>00164779</corp_code>
+        <corp_name>SK하이닉스</corp_name>
+        <corp_eng_name>SK hynix Inc.</corp_eng_name>
+        <stock_code>000660</stock_code>
+        <modify_date>20240115</modify_date>
+    </list>
+    <list>
+        <corp_code>00138224</corp_code>
+        <corp_name>현대자동차</corp_name>
+        <corp_eng_name>HYUNDAI MOTOR COMPANY</corp_eng_name>
+        <stock_code>005380</stock_code>
+        <modify_date>20231101</modify_date>
+    </list>
+    <list>
+        <corp_code>00999999</corp_code>
+        <corp_name>가상비상장법인</corp_name>
+        <corp_eng_name></corp_eng_name>
+        <stock_code> </stock_code>
+        <modify_date>20240301</modify_date>
+    </list>
+    <list>
+        <corp_code>00888888</corp_code>
+        <corp_name>한글전용비상장</corp_name>
+        <corp_eng_name></corp_eng_name>
+        <stock_code></stock_code>
+        <modify_date>20240220</modify_date>
+    </list>
+</result>

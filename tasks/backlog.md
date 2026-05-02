@@ -38,6 +38,18 @@
 - GraphRAG vs Vector RAG 30~50문항 비교
 - 결과를 `docs/evaluation/` 아래에 정리
 
+## v8: Operational Pipeline (정기 ingestion·운영 자동화)
+- 데이터 종류별 갱신 cadence 정의
+  - corpCode.xml: 일 1회
+  - 정기 사업보고서: 분기 마감(3·5·8·11월) 직후
+  - 주요사항보고서·지분공시: 거의 실시간 (DART webhook 또는 짧은 polling)
+  - 뉴스 RSS (v1 이후): 시간 단위
+- 스케줄러 도입: 가장 가벼운 것부터 (GitHub Actions cron → 필요 시 Prefect/Airflow)
+- 적재 실패 알림 + 재시도 정책
+- 데이터 freshness 메트릭 (소스별 마지막 적재 시각 추적)
+- 비고: v0~v5는 수동 트리거(`fetch_corp_codes()` 등 순수 함수 직접 호출)로 진행.
+  도구·그래프 품질이 검증된 뒤에야 자동화 비용이 정당화되므로 의식적으로 지연.
+
 ## 잡일 풀
 - 로깅 표준화
 - API 응답 스키마 OpenAPI 스펙 문서화

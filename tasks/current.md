@@ -9,14 +9,14 @@ Streamlit으로 그래프 시각화. 7일.
 - [x] ruff/mypy/pytest 설정
 - [x] `.env.example` + `config.py`
 - [ ] Neo4j Aura Free 인스턴스 생성, 연결 핑
-- [ ] DART OpenAPI 키 발급, 핑 테스트
+- [x] DART OpenAPI 키 발급, 핑 테스트 (e2e 테스트 `tests/e2e/sources/test_dart_corp_code_e2e.py`로 실호출 검증 완료)
 - [x] 스모크 테스트 통과 (`tests/unit/test_smoke.py`)
 - [x] GitHub repo public 생성, 초기 푸시
 - [x] Day 1 회고 + progress.md 업데이트
 
 ## Day 2: DART 데이터 학습 + 수집
 
-- [ ] DART corp_code 전체 다운로드, 구조 파악
+- [x] DART corp_code 전체 다운로드, 구조 파악 (`src/k_fingraph/sources/dart.py` + 스키마)
 - [ ] KOSPI 200 종목 리스트 확보 (KRX 또는 외부 source)
 - [ ] KOSPI 200에 대해 corp_code 매핑
 - [ ] DART 사업보고서 1~2건 직접 받아보고 지분 정보 위치 파악 (도메인 학습)
@@ -70,6 +70,5 @@ Streamlit으로 그래프 시각화. 7일.
 
 ## Blocked / Questions
 
-- Neo4j Aura 인스턴스 생성 + DART OpenAPI 키 발급 완료, `.env`에 주입됨.
-- "연결 핑" 체크박스 2개는 미체크 유지 — 별도 핑 스크립트를 만들기보다
-  Day 2의 DART 클라이언트 코드 + e2e 테스트에서 실제 호출로 검증한다.
+- DART API 연결성: 검증 완료 (e2e 테스트 통과).
+- Neo4j Aura 연결 핑: 미검증 — Day 4 클라이언트 래퍼 작성 시 통합 테스트로 처리 예정.

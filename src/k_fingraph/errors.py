@@ -9,6 +9,10 @@ class DartAPIError(KFinGraphError):
     """DART OpenAPI call failed or returned an error status."""
 
 
+class DartParseError(KFinGraphError):
+    """DART response payload could not be parsed (malformed XML/ZIP, schema mismatch)."""
+
+
 class LLMExtractionError(KFinGraphError):
     """LLM-based extraction (NER/RE) failed or produced invalid output."""
 

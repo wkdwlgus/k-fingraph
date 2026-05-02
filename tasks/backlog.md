@@ -10,9 +10,17 @@
 
 ## v2: Entity Resolution
 - 1차: string normalization + corp_code 매칭
-- 2차: 임베딩 유사도 (BGE-M3 또는 KoSimCSE)
+- 2차: 텍스트 임베딩 유사도 — 모델은 v2 진입 시점 ADR로 결정
 - 3차: LLM judge 결합
 - 평가셋: 동명이인/유사회사명 50쌍 라벨링
+- 진입 전 ADR 작성: 텍스트 임베딩 모델 선택
+  - `docs/conventions.md`의 "외부 도구 선택 ADR 4단계" 원칙을 따름
+  - 평가 기준: 한국어 회사명 매칭 recall@k, 인퍼런스 latency, 메모리·디스크,
+    라이선스
+  - 후보 모델 survey는 v2 진입 시점에 다시 수행 (한국어 임베딩 생태계 변화
+    빠름 — 지금 후보를 박지 않는다)
+  - 위 평가셋(50쌍 라벨링)으로 정량 비교한 결과를 ADR Rationale에 명시
+    (어느 모델이 어느 지표에서 얼마나 우월했는지, 어떤 trade-off로 결정했는지)
 
 ## v3: 충격 시뮬레이터 (도구 1, GraphRAG retrieval)
 - BFS/DFS 기반 propagation 알고리즘
@@ -21,9 +29,15 @@
 - 평가: 과거 위기 사건 백테스트
 
 ## v4: 유사 종목 (도구 2, GraphRAG retrieval)
-- Node2Vec 임베딩
-- (선택) GraphSAGE 비교
+- 그래프 임베딩 적용 — 알고리즘·라이브러리는 v4 진입 시점 ADR로 결정
 - 평가: KOSPI 종목별 주가 상관계수 상위 N개와 비교
+- 진입 전 ADR 작성: 그래프 임베딩 알고리즘 + 라이브러리 (Neo4j GDS vs 별도)
+  - `docs/conventions.md`의 "외부 도구 선택 ADR 4단계" 원칙을 따름
+  - 평가 기준: 주가 상관계수와의 일치도, 그래프 규모 처리 가능성, GDS
+    Community 라이선스 제약, 추론 latency
+  - 후보 알고리즘 survey는 v4 진입 시점에 수행 (그 시점 SOTA가 무엇인지에
+    따라 달라짐 — 지금 후보를 박지 않는다)
+  - 정량 비교 결과를 ADR Rationale에 명시
 
 ## v5: 포트폴리오 리스크 (도구 3, GraphRAG retrieval)
 - Centrality 계산
@@ -44,9 +58,13 @@
   - 정기 사업보고서: 분기 마감(3·5·8·11월) 직후
   - 주요사항보고서·지분공시: 거의 실시간 (DART webhook 또는 짧은 polling)
   - 뉴스 RSS (v1 이후): 시간 단위
-- 스케줄러 도입: 가장 가벼운 것부터 (GitHub Actions cron → 필요 시 Prefect/Airflow)
+- 스케줄러 도입 — 라이브러리·인프라는 v8 진입 시점 ADR로 결정
 - 적재 실패 알림 + 재시도 정책
 - 데이터 freshness 메트릭 (소스별 마지막 적재 시각 추적)
+- 진입 전 ADR 작성: 스케줄러 선택 (GitHub Actions cron / Prefect / Airflow / 기타)
+  - `docs/conventions.md`의 "외부 도구 선택 ADR 4단계" 원칙을 따름
+  - 평가 기준: 운영 난이도, 모니터링·재시도 기능, 비용, 그 시점 우리 스택과의
+    적합성
 - 비고: v0~v5는 수동 트리거(`fetch_corp_codes()` 등 순수 함수 직접 호출)로 진행.
   도구·그래프 품질이 검증된 뒤에야 자동화 비용이 정당화되므로 의식적으로 지연.
 

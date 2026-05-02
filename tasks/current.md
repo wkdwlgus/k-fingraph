@@ -17,8 +17,8 @@ Streamlit으로 그래프 시각화. 7일.
 ## Day 2: DART 데이터 학습 + 수집
 
 - [x] DART corp_code 전체 다운로드, 구조 파악 (`src/k_fingraph/sources/dart.py` + 스키마)
-- [ ] KOSPI 200 종목 리스트 확보 (KRX 또는 외부 source)
-- [ ] KOSPI 200에 대해 corp_code 매핑
+- [x] KOSPI 200 종목 리스트 확보 (KRX 또는 외부 source) — KRX 정보데이터시스템 CSV 수동 수집(2026-05-02 영업일 기준), `data/reference/kospi200.csv`로 저장
+- [x] KOSPI 200에 대해 corp_code 매핑 (`src/k_fingraph/sources/kospi200.py`, 실데이터 매칭률 200/200 = 100%)
 - [ ] DART 사업보고서 1~2건 직접 받아보고 지분 정보 위치 파악 (도메인 학습)
 - [ ] notebook에서 탐색 → 발견사항을 `docs/data-notes.md`에 기록
 

@@ -55,3 +55,5 @@
 - API 응답 스키마 OpenAPI 스펙 문서화
 - Dockerfile + docker-compose
 - GitHub Actions CI
+- 유니버스 확장: KOSPI 200 → 전체 KOSPI(~900) + KOSDAQ(~1500) 적재.
+  적재 성능·시각화 부담 검증 필요. 시점 종속이 없어 어느 단계에서든 진입 가능.

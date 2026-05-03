@@ -9,7 +9,7 @@ Streamlit으로 그래프 시각화. 7일.
 - [x] ruff/mypy/pytest 설정
 - [x] `.env.example` + `config.py`
 - [x] Neo4j Aura Free 인스턴스 생성 + `.env` 주입 (외부 키 발급 완료)
-- [ ] Neo4j Aura 연결 핑 — Day 4 클라이언트 래퍼 작성 시 통합 테스트로 처리 예정
+- [x] Neo4j Aura 연결 핑 — Day 4 적재 진입 시 검증 완료 (USERNAME/DATABASE/pause 이슈 해소 후)
 - [x] DART OpenAPI 키 발급, 핑 테스트 (e2e 테스트 `tests/e2e/sources/test_dart_corp_code_e2e.py`로 실호출 검증 완료)
 - [x] 스모크 테스트 통과 (`tests/unit/test_smoke.py`)
 - [x] GitHub repo public 생성, 초기 푸시
@@ -52,15 +52,25 @@ Streamlit으로 그래프 시각화. 7일.
 
 ## Day 4: Neo4j 적재
 
-- [ ] Neo4j 클라이언트 래퍼 (`graph/client.py`)
-- [ ] Constraint/index 마이그레이션 스크립트
-- [ ] `MERGE` 기반 멱등 적재 함수 — ADR 0007 필터 적용 (양 endpoint 모두 KOSPI 200 corp_code 집합에 속하는 후보만 `OwnsRelation`으로 승격, 미매칭은 INFO 카운트 후 폐기)
-- [ ] 통합 테스트 (testcontainers)
-- [ ] 실제 KOSPI 200 + 지분 데이터 1차 적재
-- [ ] Neo4j Browser에서 육안 검증
-- [ ] 매칭 실패 후보를 (A)/(B-1)/(B-2)로 분류 카운트하여 `docs/progress.md`에
-  기록 (분류 정의는 ADR 0007 후속 작업 섹션 참조). v0.5 sprint 진입 시
-  비교 baseline이 됨
+- [x] Neo4j 클라이언트 래퍼 (`graph/client.py`)
+- [x] Constraint/index 마이그레이션 스크립트 (`graph/migrations.py`)
+- [x] `MERGE` 기반 멱등 적재 함수 — ADR 0007 필터 적용 (`graph/load.py`,
+  엣지 키 = `(source, target, source_id, as_of)` 복합)
+- [x] 통합 테스트 (testcontainers) — 14건 통과
+- [x] v0 Entity Resolution(`resolve/owns.py`) — universe 우선 + listed 보조,
+  unlisted 의도적 제외. Plan B 진행 중 추가됨 (이게 없으면 모든 후보가
+  endpoint_unresolved로 drop됨)
+- [x] 매칭 실패 후보 진단 분류기(`extract/owns_diagnostics.py`) + 단위 테스트
+- [x] 실제 KOSPI 200 + 지분 데이터 1차 적재 — 회사 200, OWNS 236,
+  resolver fix 587건. 결과 `data/processed/v0_load/report.json`
+- [x] Neo4j Browser 육안 검증 — Cypher 샘플 쿼리로 hub-and-spoke 확인:
+  삼성화재(out 12), 현대해상(out 12), 현대차(out 10) / 삼성전자(in 7).
+  주요 SUBSIDIARY: LG화학→LG에너지솔루션 82%, 현대차→HMM 99.99%,
+  HD한국조선해양→HD현대중공업 75%, 삼성생명→삼성카드 71.86%
+- [x] 매칭 실패 후보를 (A)/(B-1)/(B-2)로 분류 카운트하여 `docs/progress.md`에
+  기록 — A 338 / B-1 2,948 / B-2 6,964. v0.5 sprint 진입 시 비교 baseline
+- [x] 트러블 2건 troubleshooting.md 등록 (Aura 자격증명 / DART percentage 필드)
+  + CLAUDE.md 안티패턴에 한 줄 요약 반영
 
 ## Day 5: 마일스톤 점검 + 쿼리 구현
 

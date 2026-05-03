@@ -42,8 +42,9 @@ class Neo4jClient:
         settings = get_settings()
         return cls(
             uri=settings.neo4j_uri,
-            user=settings.neo4j_user,
+            user=settings.neo4j_username,
             password=settings.neo4j_password,
+            database=settings.neo4j_database,
         )
 
     @property

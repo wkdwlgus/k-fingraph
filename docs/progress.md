@@ -82,6 +82,52 @@
 - 다음: Day 3 첫 단위 — Pydantic `Company`·`OwnsRelation`·`DartReport` +
   DART 사업보고서 → 지분 트리플 추출 함수 + fixture 단위 테스트
 
+## 2026-05-03 (Day 4 — Neo4j 적재 + v0 ER + Aura 1차 적재)
+
+- Neo4j 클라이언트 래퍼(`graph/client.py`): 환경변수 기반 driver lifecycle,
+  session ctx, ping. Aura↔로컬 Docker 전환 시 코드 변경 없음 (ADR 0002 정합)
+- 스키마 마이그레이션(`graph/migrations.py`): schema.md의 3개 DDL을 멱등 적용
+  (Company.ticker UNIQUE, Company.corp_code UNIQUE, name_normalized INDEX)
+- 멱등 적재(`graph/load.py`): `upsert_companies`(MERGE on ticker), `upsert_owns`
+  (MERGE on `(source, target, source_id, as_of)` 복합 키 → 같은 공시 재적재
+  멱등, 다른 시점은 별도 엣지로 보존). ADR 0007 필터(`filter_loadable_candidates`)는
+  순수 함수로 분리 → Neo4j 없이 단위 테스트
+- v0 Entity Resolution(`resolve/owns.py`): 텍스트 endpoint를 정규화 이름으로
+  corp_code 표 lookup. universe(KOSPI 200) 우선 → listed 보조 → 미매칭은 그대로.
+  unlisted corp_code는 의도적으로 인덱스에서 제외 (schema에 :UnlistedCompany
+  없음 — 진단기가 B-1로 분류하도록 양보). architecture.md "v0 ER = 단순 키 매칭"
+  정의 준수
+- 매칭 실패 진단(`extract/owns_diagnostics.py`): ADR 0007 후속작업 정의 그대로
+  (A)/(B-1)/(B-2) 분류 + 카테고리별 상위 5건 샘플 텍스트 보존
+- 적재 스크립트(`scripts/load_v0.py`): KOSPI 200 → corp_code 캐시(없으면 다운로드)
+  → DART forward+reverse fetch(200사 × 2엔드포인트, 0.5s 간격) → resolve →
+  upsert → 진단 → JSON 리포트 stdout+파일. 단일 호출 실패는 isolation
+- Day 4 통합 테스트: testcontainers Neo4j 5.23으로 client/마이그레이션/upsert
+  멱등성·시점별 분리·필터 검증 14건 통과. Docker 미가동 환경에서는 graceful skip
+- Aura 인스턴스 자격증명 정정: USERNAME이 "neo4j"가 아니라 인스턴스 ID
+  (Aura 콘솔의 자격증명 .txt 파일 그대로). config 필드명을 `neo4j_username`으로
+  통일하여 Aura 자격증명 파일을 그대로 .env에 붙여넣을 수 있게 정리.
+  `.env.example` + 스모크 테스트 동기화
+- Aura 1차 적재 결과(2026-05-03, `data/processed/v0_load/report.json`):
+  - 회사 노드 200, OWNS 엣지 236 (적재 시도 242, 같은 공시키 중복 제거 6)
+  - 후보 추출 10,499 / 적재 242 / endpoint_unresolved 9,919 / outside_universe 338
+  - 진단 분류: **A 338 / B-1 2,948 / B-2 6,964** (ADR 0007 정의)
+    - resolver 도입 전(분류기 단독 측정) → A 300 / B-1 3,235 / B-2 6,964.
+      B-1 차이 287이 곧 universe 안으로 해소된 ER 갭이며 적재된 OWNS의 모집단
+  - relation_type 분포: SUBSIDIARY 29 / AFFILIATE 84 / OTHER 123
+  - 의미있는 hub 검출 사례: 삼성화재(out 12), 현대해상(out 12), 현대차(out 10),
+    삼성전자(in 7) — KOSPI 200 내 cross-holding 구조가 잡힘
+  - SUBSIDIARY 샘플(>=50%): LG화학→LG에너지솔루션 82%, 현대차→HMM 99.99%,
+    HD한국조선해양→HD현대중공업 75%, 삼성생명→삼성카드 71.86%, POSCO홀딩스→
+    포스코인터내셔널 70.7%, SK케미칼→SK바이오사이언스 66.45% — v0 demo로
+    ADR 0007이 예상한 hub-and-spoke 구조 가시화
+- 부딪힌 문제 → `docs/troubleshooting.md` 갱신: (1) Aura USER vs USERNAME +
+  pause-after-72h 전제, (2) DART 응답에서 percentage 필드에 주식 수 등
+  out-of-range 값을 적은 공시(영풍·삼성전자 일부) → loader 스크립트에서
+  `DartParseError`도 isolation 대상으로 catch하여 회사 단위로 skip
+- 다음: Day 5 — 마일스톤 점검 + Cypher 3종(`get_subsidiaries`,
+  `find_common_parent`, `get_within_2hop`) 구현 + 테스트
+
 ## 다음 마일스톤
 
 - [ ] **v0 (MVP-zero)**: KOSPI 200 노드 + 지분 엣지 + Cypher 3개 통과 + Streamlit 시각화 (목표 7일)

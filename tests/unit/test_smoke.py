@@ -10,7 +10,7 @@ from k_fingraph.config import Settings, get_settings
 
 REQUIRED_ENV = {
     "NEO4J_URI": "neo4j+s://test.databases.neo4j.io",
-    "NEO4J_USER": "neo4j",
+    "NEO4J_USERNAME": "neo4j",
     "NEO4J_PASSWORD": "test-password",
     "DART_API_KEY": "test-dart-key",
     "OPENAI_API_KEY": "sk-test",
@@ -37,7 +37,7 @@ def test_settings_reads_environment(monkeypatch: pytest.MonkeyPatch, tmp_path: P
     settings = Settings()  # type: ignore[call-arg]
 
     assert settings.neo4j_uri == REQUIRED_ENV["NEO4J_URI"]
-    assert settings.neo4j_user == "neo4j"
+    assert settings.neo4j_username == "neo4j"
     assert settings.neo4j_password == REQUIRED_ENV["NEO4J_PASSWORD"]
     assert settings.dart_api_key == REQUIRED_ENV["DART_API_KEY"]
     assert settings.openai_api_key == REQUIRED_ENV["OPENAI_API_KEY"]

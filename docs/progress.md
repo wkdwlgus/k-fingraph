@@ -261,10 +261,16 @@
   자세한 분석은 ADR 0009
 - ADR 0009 신설(v0.5 universe 정의) — ADR 0007 supersede. ADR 0008은 supersede
   없이 baseline 비교만 수행 (v2 ER sprint에서 supersede 예정)
+- 2026-05-04 세션 마감 — `v0.5.0` annotated tag 생성 + `git push origin
+  main && git push origin v0.5.0` 완료. Streamlit selectbox 2,659 옵션 UX
+  체감은 데스크톱 브라우저 직접 확인 필요해 sprint 안에서 닫지 못하고
+  `tasks/backlog.md` 잡일 풀로 이관. 다음 sprint 미정 (v1 뉴스 추출 / v2 ER
+  중 사용자 결정 대기)
 
 ## 다음 마일스톤
 
 - [x] **v0 (MVP-zero)**: KOSPI 200 노드 + 지분 엣지 + Cypher 3개 통과 + Streamlit 시각화 (목표 7일)
+- [x] **v0.5**: 적재 universe 확장 (KOSPI 보통주 + KOSDAQ 보통주, 회사 2,659 / OWNS 2,347, ADR 0009)
 - [ ] v1: 뉴스 추출 파이프라인
 - [ ] v2: Entity Resolution
 - [ ] v3: 충격 시뮬레이터 + 워크벤치

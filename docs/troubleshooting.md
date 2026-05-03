@@ -185,3 +185,40 @@ default가 sorted-by-name 첫 두 개(`삼성물산` / `삼성바이오로직스
   빠지기 쉬움.
 - 단일 입력 패널은 default가 의미 있는 결과를 내므로 그대로 두는 게 사용자 경험에
   유리. 일률적 placeholder 적용 ≠ 항상 좋은 UX.
+
+### 2026-05-04: v0.5 DoD "(A) 매칭 실패 → 0" 부분 달성 — 분류기 정의와 DART historical 보존 정책의 불일치
+
+**증상**
+v0.5 sprint DoD에 "(A) 매칭 실패 카운트 v0 baseline 338 → 0 또는 그에 가까운 값"
+을 박았으나, universe를 KOSPI 200(200사) → 전체 KOSPI + KOSDAQ 보통주(2,659사)로
+13배 확장한 후에도 (A)가 181건 잔존. 절반 가까이가 universe 확장으로 회복되지 않음.
+
+**원인**
+- `extract/owns_diagnostics.py`의 (A) 분류 정의가 `record.stock_code is not None`을
+  "currently listed"의 proxy로 사용. 즉 "DART corp_code에 stock_code가 있으면 어떤
+  거래소엔가 상장돼 있다"고 가정.
+- 그러나 DART는 상장폐지·합병 등으로 더 이상 거래소에 존재하지 않는 회사도 historical
+  stock_code를 보존. 잔여 (A) 181건의 sample(부산은행·경남은행·동양건설산업·경남기업·
+  쌍용건설)이 모두 이 패턴 — 과거 상장 후 합병·인수·청산된 회사들.
+- DoD를 박을 때 ADR 0007의 (A) 정의("universe만 넓히면 매칭됨")를 그대로 신뢰했고,
+  분류 정의가 가정하는 도메인 모델("stock_code = currently listed")과 외부 시스템의
+  실제 보존 정책("DART는 historical stock_code 보존") 사이의 불일치를 검증하지 않았음.
+
+**해결**
+- v0.5 안에서는 classifier 코드를 수정하지 않음 — 수정하면 v0 baseline과의 직접
+  비교가 깨져 sprint의 측정 목적이 무너짐.
+- 대신 ADR 0009 본문에 잔여 (A) 181건의 정체와 구조적 한계를 정직하게 기록 ("(A)
+  잔여는 universe 확장으로 영구 해소 불가"). DoD 항목은 [~] 부분 달성 표기.
+- classifier 정의 다듬기는 v2 ER sprint 영역(또는 별도 분류기 갱신 sprint)으로 이관.
+  새 정의 후보: `stock_code is not None AND corp_code in current_listed_universe`.
+
+**교훈**
+- 외부 시스템의 식별자가 시간 차원의 의미("현재성")를 함의한다고 가정할 때는 그
+  시스템의 보존 정책을 한 번 더 확인. DART처럼 historical 데이터를 보존하는 시스템은
+  식별자의 "있음"이 "현재 활성"을 보장하지 않음.
+- DoD에 외부 분류기·외부 표준의 결과 0% 잔여를 expectation으로 박기 전에, **잔여를
+  만들 수 있는 구조적 원인이 분류 정의 자체에 있지 않은지** 한 번 점검. ADR 본문이
+  "X 확장하면 다 잡힌다"고 단언해도, 그 확장이 분류 정의의 가정과 정합적인지를 별도
+  검증.
+- 부분 달성으로 끝난 결과는 ADR 본문에 "왜 100% 안 됐는지" 구조적 원인을 정직하게
+  기록 → 다음 sprint가 정확한 baseline을 가짐. 숨기거나 DoD를 사후 완화하면 안 됨.

@@ -1,119 +1,57 @@
-# Current Sprint: v0 (MVP-zero) — 7일
+# Current Sprint: v0.5 (적재 universe 확장)
 
-목표: KOSPI 200 기업 노드 + DART 지분 엣지 적재, Cypher 3개 쿼리 통과,
-Streamlit으로 그래프 시각화. 7일.
+목표: 적재 universe를 KOSPI 200에서 **전체 KOSPI + KOSDAQ**으로 확장하여,
+v0에서 매칭 실패로 폐기된 후보 중 (A) 종류(다른 상장사라 매칭 실패)를 즉시
+해소. v0 적재 후 측정해 둔 분류(A 338 / B-1 2,948 / B-2 6,964, ADR 0008)와
+비교해 (A) 감소량을 정량 입증한다.
 
-## Day 1: 환경 셋업
+비상장사·외국 법인·개인·SPC 등 (B) 종류는 본 sprint 범위 밖이며 schema 확장
+sprint(v3 Person, v4 AuditFirm 등)에서 점진 해소된다.
 
-- [x] uv init, pyproject.toml, 의존성 설치
-- [x] ruff/mypy/pytest 설정
-- [x] `.env.example` + `config.py`
-- [x] Neo4j Aura Free 인스턴스 생성 + `.env` 주입 (외부 키 발급 완료)
-- [x] Neo4j Aura 연결 핑 — Day 4 적재 진입 시 검증 완료 (USERNAME/DATABASE/pause 이슈 해소 후)
-- [x] DART OpenAPI 키 발급, 핑 테스트 (e2e 테스트 `tests/e2e/sources/test_dart_corp_code_e2e.py`로 실호출 검증 완료)
-- [x] 스모크 테스트 통과 (`tests/unit/test_smoke.py`)
-- [x] GitHub repo public 생성, 초기 푸시
-- [x] Day 1 회고 + progress.md 업데이트
+## 진입 전 결정 재검토 (first-class — 망각 금지)
 
-## Day 2: DART 데이터 학습 + 수집
+CLAUDE.md sprint 진입 절차에 따라 본 sprint 이름이 "재검토 트리거" 컬럼에
+등장하는 ADR을 모두 펼쳐 읽고, 그 결과를 본 sprint의 작업 단위로 변환한다.
 
-- [x] DART corp_code 전체 다운로드, 구조 파악 (`src/k_fingraph/sources/dart.py` + 스키마)
-- [x] KOSPI 200 종목 리스트 확보 (KRX 또는 외부 source) — KRX 정보데이터시스템 CSV 수동 수집(2026-05-02 영업일 기준), `data/reference/kospi200.csv`로 저장
-- [x] KOSPI 200에 대해 corp_code 매핑 (`src/k_fingraph/sources/kospi200.py`, 실데이터 매칭률 200/200 = 100%)
-- [x] DART 사업보고서 1~2건 직접 받아보고 지분 정보 위치 파악 (도메인 학습) — 5개 엔드포인트(공시검색·기업개황·최대주주·타법인 출자·5% 보고)를 삼성전자·SK하이닉스로 호출, 응답 구조·결측 패턴·날짜 포맷 혼재 관찰
-- [x] notebook에서 탐색 → 발견사항을 `docs/data-notes.md`에 기록 — notebook 대신 ad-hoc Python 스크립트로 탐색, 결과를 `docs/data-notes.md`에 (A)+(B 분리 대비) 설계로 정리, v3·v4·v5 미래 도구 API 카탈로그 포함
+- [ ] **ADR 0007 (v0 OWNS 적재 범위) supersede** — universe 정의를
+      "KOSPI 200 ↔ KOSPI 200" → "확장 universe(전체 KOSPI + KOSDAQ) ↔ 확장
+      universe"로 갱신하는 신규 ADR 작성. 옛 ADR Status를 `Superseded by ADR
+      00NN`로 갱신하고 본문은 보존. `docs/decisions/README.md` 인덱스의 트리거
+      컬럼도 동기화
+- [ ] **ADR 0008 (v0 OWNS endpoint 해소)** — universe 확장 후 `(A)/(B-1)/(B-2)`
+      카운트를 다시 측정하여 v0 baseline(A 338 / B-1 2,948 / B-2 6,964)과
+      비교, `docs/progress.md`에 기록. v2 ER sprint에서 supersede 예정이라
+      이 단계에서는 정책 변경이 아니라 **재측정**만 수행
 
-## Day 3: 파싱 + Pydantic 스키마
+## 작업 단위
 
-- [x] Pydantic: `Company`, `OwnsRelation`, `DartReport`
-  - `schemas/graph.py` 신규: `Company` / `OwnsEndpoint` / `OwnsCandidate` /
-    `OwnsRelation` / `RelationType`. ER 전 상태 표현을 위해 `OwnsCandidate` +
-    `OwnsEndpoint` 추가 (graph 적재되지 않는 ingestion 중간 산출물).
-  - `schemas/dart.py` 확장: forward `DartOtherCorpInvestmentRow/Report`,
-    reverse `DartMajorShareholderRow/Report`.
-- [x] DART 사업보고서 → 지분 관계 트리플 추출 함수 (양방향)
-  - `sources/dart_reports.py`: forward(`otrCprInvstmntSttus`) + reverse
-    (`hyslrSttus`) fetcher + pure parser + 값 정규화 헬퍼
-    (`parse_dart_int/float/pct/date`, `normalize_company_name`)
-  - `extract/owns.py`: 두 방향 → `OwnsCandidate`. reverse 추출 시 stake_pct
-    0/None 행은 특수관계인 명단으로 보고 제외. `classify_relation`은 ADR 0006
-    임계값(50/20/0).
-- [x] 단위 테스트: fixture 기반 (실제 API 호출 없음)
-  - fixture 2종(`tests/fixtures/dart/otr_cpr_invstmnt_sample.json`,
-    `hyslr_sttus_sample.json`) — edge case 망라(콤마/`-`/음수, 3가지 날짜
-    포맷, 한자/괄호 법인형, 0지분 친인척)
-  - `tests/unit/sources/test_dart_reports.py` + `tests/unit/extract/test_owns.py`,
-    총 41건 신규 테스트 통과
-- [x] 추출·적재 정책 ADR 2건 박음
-  - ADR 0006: `relation_type` 임계값 + v3 재검토 트리거를 backlog v3 섹션에
-    역참조 (잊지 않게)
-  - ADR 0007: v0 OWNS 적재 범위 — KOSPI 200끼리 매칭되는 엣지만, 매칭 실패
-    후보는 메모리에서 폐기. Day 4 적재 함수에서 필터로 박음.
+- [ ] KRX 정보데이터시스템에서 KOSPI 전 종목·KOSDAQ 전 종목 수집
+  (v0의 KOSPI 200 수집과 같은 EUC-KR → UTF-8 변환 절차)
+- [ ] 각 종목 → DART corp_code 매핑 (v0 `kospi200.py` 매핑 로직 재사용 가능,
+  필요 시 `extended_universe.py`로 일반화)
+- [ ] 종목 메타에 `market` 구분(KOSPI / KOSDAQ) 부착 — `Company.market`
+  enum은 이미 두 값을 모두 허용하므로 schema 변경 없음
+- [ ] 적재 필터 갱신 — ADR 0007 supersede 신규 ADR 결정에 따라 universe
+  교체 (`scripts/load_v0.py` 또는 후속 스크립트)
+- [ ] 확장 universe로 forward + reverse OWNS 재추출·재적재 (idempotent)
+- [ ] 매칭 실패 분류 재측정 — `extract/owns_diagnostics.py` 그대로 재사용,
+  결과를 v0 baseline과 함께 `docs/progress.md`에 기록
+- [ ] (선택) Streamlit 워크벤치 selectbox 옵션이 ~2,400개로 늘어나는데
+  현재 selectbox UX가 견디는지 확인. 견디지 못하면 `_company_index.search_companies`
+  를 활용한 autocomplete 패턴으로 전환 — 검색 헬퍼는 v0에서 미리 분리해 둠
 
-## Day 4: Neo4j 적재
+## Definition of Done (v0.5)
 
-- [x] Neo4j 클라이언트 래퍼 (`graph/client.py`)
-- [x] Constraint/index 마이그레이션 스크립트 (`graph/migrations.py`)
-- [x] `MERGE` 기반 멱등 적재 함수 — ADR 0007 필터 적용 (`graph/load.py`,
-  엣지 키 = `(source, target, source_id, as_of)` 복합)
-- [x] 통합 테스트 (testcontainers) — 14건 통과
-- [x] v0 Entity Resolution(`resolve/owns.py`) — universe 우선 + listed 보조,
-  unlisted 의도적 제외 (ADR 0008로 박음). Plan B 진행 중 추가됨 — 이게 없으면
-  모든 후보가 endpoint_unresolved로 drop되어 OWNS 적재 0건
-- [x] 매칭 실패 후보 진단 분류기(`extract/owns_diagnostics.py`) + 단위 테스트
-- [x] 실제 KOSPI 200 + 지분 데이터 1차 적재 — 회사 200, OWNS 236,
-  resolver fix 587건. 결과 `data/processed/v0_load/report.json`
-- [x] Neo4j Browser 육안 검증 — Cypher 샘플 쿼리로 hub-and-spoke 확인:
-  삼성화재(out 12), 현대해상(out 12), 현대차(out 10) / 삼성전자(in 7).
-  주요 SUBSIDIARY: LG화학→LG에너지솔루션 82%, 현대차→HMM 99.99%,
-  HD한국조선해양→HD현대중공업 75%, 삼성생명→삼성카드 71.86%
-- [x] 매칭 실패 후보를 (A)/(B-1)/(B-2)로 분류 카운트하여 `docs/progress.md`에
-  기록 — A 338 / B-1 2,948 / B-2 6,964. v0.5 sprint 진입 시 비교 baseline
-- [x] 트러블 2건 troubleshooting.md 등록 (Aura 자격증명 / DART percentage 필드)
-  + CLAUDE.md 안티패턴에 한 줄 요약 반영
-
-## Day 5: 마일스톤 점검 + 쿼리 구현
-
-- [x] **점검**: 데이터 의미있음(Company 200/OWNS 236, hub-and-spoke 검증), 비상장
-  누락은 ADR 0008로 의도된 trade-off, 일정 재조정 불요 → `docs/progress.md` 기록
-- [x] Cypher 쿼리 3종 구현 + 테스트 (`src/k_fingraph/graph/queries.py`,
-  결과 모델은 `src/k_fingraph/schemas/queries.py`, 통합 테스트 13건)
-  - [x] `get_subsidiaries(ticker, *, relation_types=(SUBSIDIARY,))`
-  - [x] `find_common_parents(ticker_a, ticker_b)` — 단수→복수 (공동 부모 N개 가능)
-  - [x] `get_within_2hop(ticker)` — 방향 무시, Streamlit 시각화용
-- [x] v0 한계 2건을 backlog 트리거로 박음 — v1: as_of dedupe 정책 / v3: 쿼리
-  깊이·방향성
-
-## Day 6: Streamlit UI
-
-- [x] Streamlit 워크벤치 v0 (`src/k_fingraph/interfaces/streamlit_app.py`,
-  사이드바 라디오로 워크플로우 3종 + 회사 selectbox 200건)
-- [x] Plotly + networkx 그래프 시각화 컴포넌트 (pyvis에서 갈아탐 — 사유:
-  Streamlit 네이티브 통합·미래 인터랙션 확장. 정식 ADR은 v3 진입 시 `tasks/
-  backlog.md` v3 섹션의 "그래프 시각화 라이브러리 정식 선택" 트리거 참조)
-- [x] 종목 검색 + 쿼리 3종을 드롭다운으로 노출 (200개라 selectbox로 충분,
-  `_company_index` 검색 헬퍼는 universe 확장 시 autocomplete으로 전환 가능)
-- [x] 결과 표 + 그래프 + 출처 표시 (모든 결과에 DART `source_id` 컬럼/툴팁)
-- [x] 수동 브라우저 검증 — 자회사 조회·공통 부모·2-hop 골든패스 동작 확인.
-  공통 부모 패널은 의도 없는 default 조합 방지를 위해 placeholder 진입 적용
-
-## Day 7: 마감
-
-- [ ] README.md 최종 정리 (스크린샷·실제 사용 예시 추가, v0 완료 상태 반영)
-- [ ] `docs/troubleshooting.md`에 부딪힌 문제 ≥ 1개 기록
-- [ ] `docs/progress.md`에 v0 완료 기록
-- [ ] git tag `v0.1.0`
-- [ ] v0.5 sprint(적재 universe 확장) 진입 — `tasks/backlog.md`의 v0.5 항목을
-  `tasks/current.md`의 새 스프린트로 옮김. v1 진입은 v0.5 마감 후
-
-## Definition of Done (v0)
-
+- [ ] 확장 universe 적재 결과: 회사 노드 ~2,400, OWNS 엣지 v0 대비 증가량
+  유의미 (구체 수치는 baseline 대비 증가율을 사후 기록)
+- [ ] (A) 종류 매칭 실패 카운트가 v0 baseline 338 → 0 또는 그에 가까운 값
+  (ADR 0008 재측정으로 입증)
+- [ ] ADR 0007을 supersede하는 신규 ADR + 인덱스 갱신
 - [ ] `uv run pytest -m "not e2e"` 0 fail
 - [ ] `uv run ruff check . && uv run mypy src/` 0 error
-- [ ] Streamlit 실행 → 종목코드 입력 → 그래프 시각화 동작
-- [ ] 부딪힌 문제 ≥ 1개를 troubleshooting.md에 기록
-- [ ] git tag `v0.1.0` + GitHub push
+- [ ] git tag `v0.5.0` (또는 sprint 마감 시점에 사용자와 합의한 태그명)
 
 ## Blocked / Questions
 
-- 없음 (DART API · Neo4j Aura 연결 모두 검증 완료).
+- 없음 (KRX·DART·Aura 모두 v0에서 검증 완료. 전체 KOSPI/KOSDAQ CSV는 KRX
+  정보데이터시스템에서 v0 KOSPI 200과 동일한 절차로 수집 가능)

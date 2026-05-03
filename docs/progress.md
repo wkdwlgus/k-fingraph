@@ -205,9 +205,33 @@
 - 다음: Day 7 — README/스크린샷 정리, troubleshooting.md 사례 보강, v0 완료
   태그(`v0.1.0`), v0.5 sprint 진입 절차
 
+## 2026-05-03 (Day 7 — v0 마감)
+
+- README 갱신 — 현재 상태를 "v0 진행 중 (Day 1~7 체크박스)"에서 **"v0 완료"**
+  (KOSPI 200 그래프 + Cypher 3종 + Streamlit 가동)로 갈아끼움. 워크벤치 데모
+  섹션 신설 + 스크린샷 3장(자회사 조회·공통 부모·2-hop) 임베드. 모듈 트리의
+  interfaces 라인은 "예정"에서 "Streamlit 워크벤치 (v0)"로 갱신
+- troubleshooting.md 신규 사례 — 워크벤치 selectbox default 조합으로 의도 없는
+  무결과를 보여주는 UX 함정. CLAUDE.md 안티패턴에 한 줄 요약(다중 입력
+  워크플로우는 placeholder + 명시적 선택 강제)
+- v0 회고:
+  - 7일 sprint 일정 안에 Definition of Done 모두 통과 (회사 200 / OWNS 236,
+    Cypher 3종, Streamlit 가동, ruff/mypy 0, pytest -m "not e2e" 149 passed,
+    troubleshooting 사례 ≥ 1)
+  - 큰 함정 4건 모두 troubleshooting + 안티패턴화 — KRX EUC-KR / Aura
+    USERNAME·DB·pause / DART percentage out-of-range / extract↔load 사이 ER 누락
+    / 워크벤치 default UX
+  - 결정 기록 8건 (ADR 0001~0008) — 그 중 v0 sprint에서 박힌 것은 0005~0008,
+    재검토 트리거가 후속 sprint에 first-class로 박혀 있어 망각 위험 낮음
+  - "demo가 손에 잡히는 신호"라는 v0 목적 달성 — KOSPI 200 안에서도 hub-and-spoke
+    구조(삼성·현대·LG 그룹 지배구조)가 즉시 시각적으로 드러남
+- v0.5 sprint 진입 — `tasks/current.md`를 v0.5 헤더로 갈아끼우고 backlog의
+  v0.5 섹션 + 재검토 대상 ADR 0007/0008을 first-class 작업으로 이관 완료
+- v0.1.0 annotated tag 생성. push는 사용자 확인 후
+
 ## 다음 마일스톤
 
-- [ ] **v0 (MVP-zero)**: KOSPI 200 노드 + 지분 엣지 + Cypher 3개 통과 + Streamlit 시각화 (목표 7일)
+- [x] **v0 (MVP-zero)**: KOSPI 200 노드 + 지분 엣지 + Cypher 3개 통과 + Streamlit 시각화 (목표 7일)
 - [ ] v1: 뉴스 추출 파이프라인
 - [ ] v2: Entity Resolution
 - [ ] v3: 충격 시뮬레이터 + 워크벤치

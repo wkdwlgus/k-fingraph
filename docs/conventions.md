@@ -69,6 +69,9 @@
   - ❌ `docs: progress.md 업데이트`
   - ✅ `docs: 작업 로그(progress.md)에 환경 셋업 완료 항목 추가`
 - 제목은 50자 이내, 본문이 필요하면 한 줄 띄우고 풀어쓴다.
+- **Co-Authored-By trailer 금지**: AI 어시스턴트(Claude 등)를 공동
+  저자로 표기하지 않는다. 커밋 메시지 끝에 `Co-Authored-By: Claude ...`
+  trailer를 추가하지 말 것. 저자는 사람 한 명만 표기.
 
 ## File Organization
 

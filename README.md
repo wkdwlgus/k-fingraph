@@ -117,7 +117,7 @@ k-fingraph/
 | [docs/progress.md](docs/progress.md) | 시간순 작업 로그 |
 | [docs/data-notes.md](docs/data-notes.md) | DART API 도메인 학습 노트 + 미래 도구 sprint별 추가 학습 필요 API 카탈로그 |
 | [docs/troubleshooting.md](docs/troubleshooting.md) | 마주친 문제와 해결 기록 |
-| [docs/decisions/](docs/decisions/) | ADR — 과거 결정 (재논의 금지, 변경은 새 ADR) |
+| [docs/decisions/README.md](docs/decisions/README.md) | ADR 인덱스 (제목·Status·재검토 트리거). 개별 ADR은 인덱스에서 진입 |
 
 ## 기술 스택
 

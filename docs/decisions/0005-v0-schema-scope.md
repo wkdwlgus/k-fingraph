@@ -1,7 +1,7 @@
 # ADR 0005: v0 그래프 schema 범위 결정 (Company + OWNS만 유지)
 
-**Date**: 2026-05-03
-**Status**: Accepted
+- Status: Accepted
+- Date: 2026-05-03
 
 ## Context
 

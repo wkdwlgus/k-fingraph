@@ -47,6 +47,18 @@
   첫 액션으로 정리하기로 결정 (`tasks/current.md`의 "다음 세션 첫 액션"
   섹션 참조)
 
+## 2026-05-03 (Day 3 진입 선행 — architecture 문서 정리)
+
+- `docs/architecture.md` stale 3건 해소: (1) Layer 1 다이어그램에
+  `Graph Embedding (v4+)` 박스 신설 + `### Embedding Pipelines` 섹션
+  (텍스트 임베딩 v2 vs 그래프 임베딩 v4 비교표), (2) Extraction Pipeline
+  박스를 `v1+, LLM-based`로 라벨링하고 Ingestion 3번·Key Design Principles
+  에 v0 skip / v1+ 활성 주석, (3) `## Schema Evolution Timeline` 섹션 신설
+  (v0/v1/v3/v4/v5 별 추가 노드·엣지·트리거 KPI + ADR 0005 cross-link)
+- 코드 변경 없음. ADR 신규 생성 없음 (기존 ADR 0004·0005 반영)
+- 다음: Day 3 첫 단위 — Pydantic `Company`·`OwnsRelation`·`DartReport` +
+  DART 사업보고서 → 지분 트리플 추출 함수 + fixture 단위 테스트
+
 ## 다음 마일스톤
 
 - [ ] **v0 (MVP-zero)**: KOSPI 200 노드 + 지분 엣지 + Cypher 3개 통과 + Streamlit 시각화 (목표 7일)

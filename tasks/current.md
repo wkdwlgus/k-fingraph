@@ -24,24 +24,23 @@ Streamlit으로 그래프 시각화. 7일.
 
 ## 다음 세션 첫 액션 (Day 3 진입 전 선행)
 
-- [ ] **`docs/architecture.md` 정리** — Day 2 핸드오프 직후 stale 부분 발견됨
+- [x] **`docs/architecture.md` 정리** — Day 2 핸드오프 직후 stale 부분 발견됨 (2026-05-03 처리)
 
-세 가지 gap을 같이 처리:
+세 가지 gap을 처리 완료:
 
-1. **Ingestion 흐름에 임베딩 단계 명시 누락** — 현재 4번 "Entity Resolution"이
-   한 단어로만 적혀 있으나 실제로는 그 안에 텍스트 임베딩(엔티티 해소 sprint)이
-   핵심 도구. 또한 그래프 임베딩(유사 종목 sprint)이 다이어그램·흐름 어디에도
-   안 보임.
-2. **LLM 추출의 활성/비활성 시점 표시 누락** — 다이어그램이 "Extraction
-   Pipeline (LLM-based)"이 항상 켜진 것처럼 그려졌으나 본 v0에서는 LLM 비활성
-   (DART API가 정형 JSON 직접 제공). 뉴스 추출 sprint부터 활성화. 시점별 차이가
-   표현되어 있어야 함.
-3. **ADR 0005의 점진적 schema 확장이 반영 안 됨** — 다이어그램이 "최종 비전
-   미완성판" 같은 모호한 상태. 본 v0은 Company + OWNS만, 미래 도구 sprint
-   진입 시점에 Person·AuditFirm·Event 등이 추가된다는 흐름이 보여야 함.
+1. **Ingestion 흐름에 임베딩 단계 명시 누락** → Layer 1 다이어그램에
+   `Graph Embedding (v4+)` 박스 신설, Entity Resolution 박스에 `v2+, 텍스트
+   임베딩` 라벨, 본문에 신규 `### Embedding Pipelines` 섹션 추가 (텍스트 vs
+   그래프 임베딩의 단계·목적·시점 비교표).
+2. **LLM 추출 활성/비활성 시점** → 다이어그램 박스 라벨 `Extraction Pipeline
+   (v1+, LLM-based)`로 변경, Ingestion 3번에 v0 skip / v1+ 활성 주석, Key
+   Design Principles의 LLM 사용 범위 문구를 "v1부터"로 한정.
+3. **ADR 0005의 점진적 schema 확장 반영** → 신규 `## Schema Evolution Timeline`
+   섹션 (v0/v1/v3/v4/v5 별 추가 노드·엣지·트리거 KPI 표) + ADR 0005 cross-link
+   + "v0 시점에 선제 확장 금지" 명시.
 
-예상: 1~2시간. 완료 후 Day 3 첫 단위(Pydantic `Company`·`OwnsRelation`·
-`DartReport` + 사업보고서 → 트리플 추출 함수)로 진행.
+다음: Day 3 첫 단위(Pydantic `Company`·`OwnsRelation`·`DartReport` + 사업보고서
+→ 트리플 추출 함수)로 진행.
 
 ## Day 3: 파싱 + Pydantic 스키마
 

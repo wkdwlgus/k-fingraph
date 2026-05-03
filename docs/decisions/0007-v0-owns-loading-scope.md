@@ -1,6 +1,6 @@
 # ADR 0007: v0 OWNS 엣지 적재 범위 — KOSPI 200 ↔ KOSPI 200
 
-- Status: Accepted
+- Status: Superseded by ADR 0009 (2026-05-04)
 - Date: 2026-05-03
 
 ## Context

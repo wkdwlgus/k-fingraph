@@ -118,14 +118,14 @@ k-fingraph/
 ├── src/k_fingraph/
 │   ├── config.py           환경변수 로딩 (Settings)
 │   ├── errors.py           도메인 예외 (DartAPIError / DartParseError / LLMExtractionError / GraphWriteError)
-│   ├── sources/            외부 데이터 fetch — DART 기업 식별자·정기보고서, KOSPI 200 매퍼
+│   ├── sources/            외부 데이터 fetch — DART 기업 식별자·정기보고서, KOSPI 200 매퍼, KOSPI+KOSDAQ 확장 universe 매퍼 (v0.5)
 │   ├── extract/            정형 응답 → 그래프 후보 추출 (v0: DART 정형 JSON / v1+ LLM NER/RE) + 매칭 실패 진단 분류기
 │   ├── resolve/            Entity Resolution — v0 단순 이름 매칭 (ADR 0008) / v2+ 임베딩 기반
 │   ├── graph/              Neo4j client + 스키마 마이그레이션 + 멱등 적재 (Cypher/GDS 래퍼는 v3~)
-│   ├── scripts/            CLI 진입점 (`load_v0` — KOSPI 200 → DART → 그래프 적재 + 진단 리포트)
+│   ├── scripts/            CLI 진입점 (`load_v05` — 현행 적재; `load_v0` — v0 시점 frozen artifact)
 │   ├── workflows/          Layer 2 — 3개 도구 구현                  · 예정 (v3~v5)
 │   ├── interfaces/         Streamlit 워크벤치 (v0) — MCP / REST는 v6
-│   └── schemas/            Pydantic models — 그래프 노드/엣지 + DART·KOSPI 200 응답 스키마
+│   └── schemas/            Pydantic models — 그래프 노드/엣지 + DART·KOSPI 200·확장 universe 응답 스키마
 ├── tests/
 │   ├── unit/               외부 의존성 mock
 │   ├── integration/        testcontainers Neo4j (Docker 미가동 시 자동 skip)
@@ -133,7 +133,7 @@ k-fingraph/
 │   └── fixtures/           record-replay 데이터
 ├── data/
 │   ├── raw/                외부 다운로드 원본 (gitignored)
-│   └── reference/          정제된 참조 데이터 (예: KOSPI 200 종목 리스트)
+│   └── reference/          정제된 참조 데이터 (KOSPI 200 / KOSPI·KOSDAQ 보통주 전종목)
 ├── docs/                   설계 문서
 │   └── decisions/          ADR (변경 시 새 ADR 필수)
 └── tasks/                  스프린트 관리 (current / backlog / done)

@@ -229,6 +229,39 @@
   v0.5 섹션 + 재검토 대상 ADR 0007/0008을 first-class 작업으로 이관 완료
 - v0.1.0 annotated tag 생성. push는 사용자 확인 후
 
+## v0.5 (적재 universe 확장)
+
+- 2026-05-04 — KRX 정보데이터시스템에서 KOSPI·KOSDAQ 전종목 기본정보(EUC-KR)
+  수집 → 보통주만 필터링하여 UTF-8 정제본(`data/reference/{kospi,kosdaq}_all.csv`)
+  생성. 우선주·종류주권 제외(corp_code가 보통주와 중복되므로). 정제 결과:
+  KOSPI 보통주 839 + KOSDAQ 보통주 1,820 = 2,659 회사 — KRX 대시보드의
+  "회사수" 표시와 정확히 일치
+- v0.5 universe 모듈(`sources/extended_universe.py`) 추가 — 시장 구분(KOSPI/
+  KOSDAQ)을 행 수준에서 carry through. DART corp_code 캐시 대비 매칭률
+  100% (2,659/2,659) 확인
+- v0.5 적재 entry point(`scripts/load_v05.py`) 추가 — `load_v0.py`를 frozen
+  artifact로 보존하면서 universe 진입점만 교체. 적재 필터·ER·분류 로직은
+  v0 그대로 재사용
+- 적재 결과(`data/processed/v05_load/report.json`, walltime 59분):
+
+  | 지표                        | v0 baseline | v0.5     | 변화      |
+  | --------------------------- | ----------- | -------- | --------- |
+  | Universe 회사 수            | 200         | 2,659    | +13×      |
+  | Candidates 추출             | 10,499      | 49,100   | +4.7×     |
+  | OWNS 적재(그래프 엣지)      | 236         | 2,347    | +9.9×     |
+  | 그래프 Company 노드         | 200         | 2,659    | +13×      |
+  | **(A) 매칭 실패**           | **338**     | **181**  | **-46%**  |
+  | (B-1)                       | 2,948       | 16,553   | +5.6×     |
+  | (B-2)                       | 6,964       | 29,743   | +4.3×     |
+
+- (A) 회복은 부분 달성 — 잔여 181건은 부산은행·경남은행·동양건설산업·쌍용건설
+  등 **상장폐지됐지만 DART corpCode에 historical stock_code가 남아있는
+  corp_code들**. classifier 정의가 `stock_code is not None`을 "currently listed"
+  proxy로 사용한 데서 비롯되며 universe 확장으로는 영구 해소 불가.
+  자세한 분석은 ADR 0009
+- ADR 0009 신설(v0.5 universe 정의) — ADR 0007 supersede. ADR 0008은 supersede
+  없이 baseline 비교만 수행 (v2 ER sprint에서 supersede 예정)
+
 ## 다음 마일스톤
 
 - [x] **v0 (MVP-zero)**: KOSPI 200 노드 + 지분 엣지 + Cypher 3개 통과 + Streamlit 시각화 (목표 7일)

@@ -25,8 +25,9 @@
 | [0004](0004-graphrag-positioning.md) | GraphRAG를 명시적 프레임으로 채택한다                                | Accepted | 2026-04-28 | 없음                                                                                   |
 | [0005](0005-v0-schema-scope.md) | v0 그래프 schema 범위 = Company + OWNS만 유지                        | Accepted | 2026-05-03 | **v3 / v4 / v5 진입 시** schema 확장 신규 ADR 작성 (Person / AuditFirm 등)            |
 | [0006](0006-owns-relation-type-thresholds.md) | OWNS 엣지의 `relation_type` 임계값 (50% / 20% / 0)                   | Accepted | 2026-05-03 | **v3 진입 시** 백테스트 정확도로 재검토 (`tasks/backlog.md` v3 섹션에 트리거 박힘)    |
-| [0007](0007-v0-owns-loading-scope.md) | v0 OWNS 엣지 적재 범위 — KOSPI 200 ↔ KOSPI 200                       | Accepted | 2026-05-03 | **v0.5 진입 시** universe 확장으로 supersede / **v2 ER 진입 시** ER 정책 신규 ADR     |
-| [0008](0008-v0-owns-endpoint-resolution.md) | v0 OWNS endpoint 해소 — 정규화 이름 정확 매칭 + universe 우선        | Accepted | 2026-05-03 | **v0.5 진입 시** (A)/(B-1)/(B-2) 재측정으로 비교 baseline / **v2 ER 진입 시** supersede |
+| [0007](0007-v0-owns-loading-scope.md) | v0 OWNS 엣지 적재 범위 — KOSPI 200 ↔ KOSPI 200                       | Superseded by 0009 | 2026-05-03 | (해소됨)                                                                              |
+| [0008](0008-v0-owns-endpoint-resolution.md) | v0 OWNS endpoint 해소 — 정규화 이름 정확 매칭 + universe 우선        | Accepted | 2026-05-03 | **v0.5 진입 시** (A)/(B-1)/(B-2) 재측정으로 비교 baseline (완료) / **v2 ER 진입 시** supersede |
+| [0009](0009-v05-owns-loading-scope.md) | v0.5 OWNS 적재 범위 — 확장 universe (KOSPI 보통주 + KOSDAQ 보통주)     | Accepted | 2026-05-04 | **v2 ER 진입 시** ADR 0008과 함께 supersede                                            |
 
 ## 트리거가 발화되는 메커니즘
 

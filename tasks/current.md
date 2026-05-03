@@ -58,8 +58,8 @@ Streamlit으로 그래프 시각화. 7일.
   엣지 키 = `(source, target, source_id, as_of)` 복합)
 - [x] 통합 테스트 (testcontainers) — 14건 통과
 - [x] v0 Entity Resolution(`resolve/owns.py`) — universe 우선 + listed 보조,
-  unlisted 의도적 제외. Plan B 진행 중 추가됨 (이게 없으면 모든 후보가
-  endpoint_unresolved로 drop됨)
+  unlisted 의도적 제외 (ADR 0008로 박음). Plan B 진행 중 추가됨 — 이게 없으면
+  모든 후보가 endpoint_unresolved로 drop되어 OWNS 적재 0건
 - [x] 매칭 실패 후보 진단 분류기(`extract/owns_diagnostics.py`) + 단위 테스트
 - [x] 실제 KOSPI 200 + 지분 데이터 1차 적재 — 회사 200, OWNS 236,
   resolver fix 587건. 결과 `data/processed/v0_load/report.json`
@@ -106,5 +106,4 @@ Streamlit으로 그래프 시각화. 7일.
 
 ## Blocked / Questions
 
-- DART API 연결성: 검증 완료 (e2e 테스트 통과).
-- Neo4j Aura 연결 핑: 미검증 — Day 4 클라이언트 래퍼 작성 시 통합 테스트로 처리 예정.
+- 없음 (DART API · Neo4j Aura 연결 모두 검증 완료).

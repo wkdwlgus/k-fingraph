@@ -121,12 +121,24 @@
     HD한국조선해양→HD현대중공업 75%, 삼성생명→삼성카드 71.86%, POSCO홀딩스→
     포스코인터내셔널 70.7%, SK케미칼→SK바이오사이언스 66.45% — v0 demo로
     ADR 0007이 예상한 hub-and-spoke 구조 가시화
-- 부딪힌 문제 → `docs/troubleshooting.md` 갱신: (1) Aura USER vs USERNAME +
-  pause-after-72h 전제, (2) DART 응답에서 percentage 필드에 주식 수 등
-  out-of-range 값을 적은 공시(영풍·삼성전자 일부) → loader 스크립트에서
-  `DartParseError`도 isolation 대상으로 catch하여 회사 단위로 skip
+- 부딪힌 문제 → `docs/troubleshooting.md` 갱신 3건: (1) Aura USERNAME / DATABASE
+  / 72h pause, (2) DART 응답에서 percentage 필드에 주식 수 등 out-of-range 값
+  공시(영풍·삼성전자 일부) → loader 스크립트가 `DartParseError`도 회사 단위로
+  isolation, (3) 1차 적재 OWNS 0건 — extract와 load 사이 식별자 해소 단계 누락이
+  근본 원인, resolve 모듈 신설로 해소
 - 다음: Day 5 — 마일스톤 점검 + Cypher 3종(`get_subsidiaries`,
   `find_common_parent`, `get_within_2hop`) 구현 + 테스트
+
+## 2026-05-03 (Day 4 핸드오프)
+
+- ADR 0008 작성 — 위 Day 4 섹션의 resolve 정책을 결정 기록으로 영구화. v0.5
+  진입 시 (A)/(B-1)/(B-2) 재측정 트리거, v2 ER 진입 시 supersede 대상
+- README v0 진행 상태 동기화(Day 4 ✅), 모듈 구조의 "예정" 마커 정리, 기술 스택
+  보강(neo4j 드라이버·testcontainers)
+- `current.md` Blocked / Questions 정리 (DART·Aura 모두 검증 완료)
+- 다음 세션 진입 시 점검할 1회성 운영 메모 (트러블슈팅 본문에 적힌 내용은 제외):
+  - 1차 적재 결과 JSON은 `data/processed/v0_load/report.json`에 보관
+  - Day 5는 적재된 OWNS 위에서 동작하므로 데이터 적재 없이 바로 진입 가능
 
 ## 다음 마일스톤
 

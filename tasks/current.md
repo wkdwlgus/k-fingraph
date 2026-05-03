@@ -77,6 +77,9 @@ Streamlit으로 그래프 시각화. 7일.
 - [ ] 통합 테스트 (testcontainers)
 - [ ] 실제 KOSPI 200 + 지분 데이터 1차 적재
 - [ ] Neo4j Browser에서 육안 검증
+- [ ] 매칭 실패 후보를 (A)/(B-1)/(B-2)로 분류 카운트하여 `docs/progress.md`에
+  기록 (분류 정의는 ADR 0007 후속 작업 섹션 참조). v0.5 sprint 진입 시
+  비교 baseline이 됨
 
 ## Day 5: 마일스톤 점검 + 쿼리 구현
 
@@ -99,7 +102,8 @@ Streamlit으로 그래프 시각화. 7일.
 - [ ] `docs/troubleshooting.md`에 부딪힌 문제 ≥ 1개 기록
 - [ ] `docs/progress.md`에 v0 완료 기록
 - [ ] git tag `v0.1.0`
-- [ ] v1 백로그 업데이트 → `tasks/current.md`에 v1 첫 스프린트 작성
+- [ ] v0.5 sprint(적재 universe 확장) 진입 — `tasks/backlog.md`의 v0.5 항목을
+  `tasks/current.md`의 새 스프린트로 옮김. v1 진입은 v0.5 마감 후
 
 ## Definition of Done (v0)
 

@@ -47,6 +47,29 @@
   첫 액션으로 정리하기로 결정 (`tasks/current.md`의 "다음 세션 첫 액션"
   섹션 참조)
 
+## 2026-05-03 (Day 3 — Pydantic 스키마 + 양방향 OWNS 추출)
+
+- 그래프 스키마 모듈 신설(`schemas/graph.py`): `Company`(schema.md v0 9필드),
+  `RelationType`(SUBSIDIARY/AFFILIATE/OTHER), `OwnsRelation`(graph 적재용),
+  `OwnsEndpoint`+`OwnsCandidate`(ER 전 상태, graph에 적재되지 않는 중간 산출물)
+- DART 정기보고서 두 응답에 대한 typed schema 확장(`schemas/dart.py`):
+  forward(`DartOtherCorpInvestmentRow/Report`), reverse(`DartMajorShareholderRow/Report`)
+- DART periodic report fetcher + pure parser(`sources/dart_reports.py`): 양방향
+  fetch 함수 + JSON → typed report 변환. 값 정규화 헬퍼(콤마 숫자, 3종 날짜 포맷,
+  3종 결측 sentinel, 음수 부호, 회사명 법인형 정규화) 같이 박음
+- OWNS 추출(`extract/owns.py`): 두 방향 → `OwnsCandidate`. reverse는 stake_pct
+  0/None 행을 특수관계인 명단으로 보고 제외. relation_type은 ADR 0006 임계값
+  (50/20/0)으로 분류
+- 결정 ADR 2건:
+  - ADR 0006(OWNS relation_type 임계값) — K-IFRS 1110/1028 통상 추정 기준
+    근거. v3 백테스트에서 분류 정확도 측정 후 재결정 — `tasks/backlog.md` v3
+    섹션에 재검토 트리거를 박아 망각 방지
+  - ADR 0007(v0 OWNS 적재 범위) — KOSPI 200 ↔ KOSPI 200만 그래프 엣지로
+    승격, 매칭 실패 후보는 적재하지 않음. ADR 0005 정신("v0 단순 유지")과 정합
+- fixture 2종 + 단위 테스트 41건 추가, 75건 모두 통과. ruff/format/mypy strict 통과
+- 다음: Day 4 — Neo4j 클라이언트 래퍼 + Constraint/index 마이그레이션 + 멱등
+  적재 + ADR 0007 필터 적용 + KOSPI 200 1차 적재 + Browser 육안 검증
+
 ## 2026-05-03 (Day 3 진입 선행 — architecture 문서 정리)
 
 - `docs/architecture.md` stale 3건 해소: (1) Layer 1 다이어그램에

@@ -44,9 +44,30 @@ Streamlit으로 그래프 시각화. 7일.
 
 ## Day 3: 파싱 + Pydantic 스키마
 
-- [ ] Pydantic: `Company`, `OwnsRelation`, `DartReport`
-- [ ] DART 사업보고서 → 지분 관계 트리플 추출 함수
-- [ ] 단위 테스트: fixture 기반 (실제 API 호출 없음)
+- [x] Pydantic: `Company`, `OwnsRelation`, `DartReport`
+  - `schemas/graph.py` 신규: `Company` / `OwnsEndpoint` / `OwnsCandidate` /
+    `OwnsRelation` / `RelationType`. ER 전 상태 표현을 위해 `OwnsCandidate` +
+    `OwnsEndpoint` 추가 (graph 적재되지 않는 ingestion 중간 산출물).
+  - `schemas/dart.py` 확장: forward `DartOtherCorpInvestmentRow/Report`,
+    reverse `DartMajorShareholderRow/Report`.
+- [x] DART 사업보고서 → 지분 관계 트리플 추출 함수 (양방향)
+  - `sources/dart_reports.py`: forward(`otrCprInvstmntSttus`) + reverse
+    (`hyslrSttus`) fetcher + pure parser + 값 정규화 헬퍼
+    (`parse_dart_int/float/pct/date`, `normalize_company_name`)
+  - `extract/owns.py`: 두 방향 → `OwnsCandidate`. reverse 추출 시 stake_pct
+    0/None 행은 특수관계인 명단으로 보고 제외. `classify_relation`은 ADR 0006
+    임계값(50/20/0).
+- [x] 단위 테스트: fixture 기반 (실제 API 호출 없음)
+  - fixture 2종(`tests/fixtures/dart/otr_cpr_invstmnt_sample.json`,
+    `hyslr_sttus_sample.json`) — edge case 망라(콤마/`-`/음수, 3가지 날짜
+    포맷, 한자/괄호 법인형, 0지분 친인척)
+  - `tests/unit/sources/test_dart_reports.py` + `tests/unit/extract/test_owns.py`,
+    총 41건 신규 테스트 통과
+- [x] 추출·적재 정책 ADR 2건 박음
+  - ADR 0006: `relation_type` 임계값 + v3 재검토 트리거를 backlog v3 섹션에
+    역참조 (잊지 않게)
+  - ADR 0007: v0 OWNS 적재 범위 — KOSPI 200끼리 매칭되는 엣지만, 매칭 실패
+    후보는 메모리에서 폐기. Day 4 적재 함수에서 필터로 박음.
 
 ## Day 4: Neo4j 적재
 

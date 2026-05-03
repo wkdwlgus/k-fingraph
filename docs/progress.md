@@ -140,6 +140,33 @@
   - 1차 적재 결과 JSON은 `data/processed/v0_load/report.json`에 보관
   - Day 5는 적재된 OWNS 위에서 동작하므로 데이터 적재 없이 바로 진입 가능
 
+## 2026-05-03 (Day 5 — 마일스톤 점검 + Cypher 쿼리 3종)
+
+- 마일스톤 점검: 회사 200·OWNS 236으로 v0 demo 신호량 충분, hub-and-spoke
+  구조 육안 검증도 완료. 비상장 자회사(예: 삼성디스플레이) 누락은 ADR 0008에
+  명시된 의도된 trade-off. 일정 재조정 불요 → Cypher/Streamlit 단계로 진행
+- Cypher 쿼리 3종 구현 — `src/k_fingraph/graph/queries.py`:
+  - `get_subsidiaries(ticker, relation_types=...)` — 1-hop OWNS 자식,
+    기본 SUBSIDIARY만, 같은 (parent, child)에 시점 다른 엣지가 있으면
+    최신 1개로 collapse
+  - `find_common_parents(ticker_a, ticker_b)` — 두 종목을 모두 직접 보유한
+    회사 (1-hop, 단수→복수 네이밍 변경: 공동 부모 N개 가능)
+  - `get_within_2hop(ticker)` — 방향 무시 2-hop 유도 부분그래프
+    (Streamlit 시각화 용도). 노드/엣지 분리 쿼리로 latest-as_of dedupe 단순화
+- 결과 모델은 `src/k_fingraph/schemas/queries.py`로 분리 — Cypher Record가
+  Streamlit/워크플로우 경계로 새지 않게 SubsidiaryRow / CommonParentRow /
+  Subgraph(Node|Edge)로 projection
+- 통합 테스트 13건 신규(testcontainers Neo4j) — 기본 동작·필터·미존재 ticker·
+  고립 노드·시점 dedupe·다중 공통 부모 정렬·2-hop 양방향 reach 검증
+- v0 작업 한계 2건 backlog에 first-class 트리거로 박음:
+  - **v1 진입 시**: 시점 dedupe 정책 (현재 latest collapse) 재검토 — v1에서
+    뉴스/지분공시로 시점 다양성 폭증
+  - **v3 진입 시**: 쿼리 깊이·방향성 (현재 1-hop / 방향 무시) 재검토 —
+    충격 전파는 transitive + 사이클 안전 traversal 필요
+- 검증: ruff 0 / mypy 0 / pytest -m "not e2e" 136 passed
+- 다음: Day 5 잔여 — 위 쿼리 함수의 Streamlit 어댑터(Day 6 같이 묶을지 고려),
+  Day 6 — Streamlit 워크벤치 v0 + pyvis 시각화
+
 ## 다음 마일스톤
 
 - [ ] **v0 (MVP-zero)**: KOSPI 200 노드 + 지분 엣지 + Cypher 3개 통과 + Streamlit 시각화 (목표 7일)

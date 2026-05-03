@@ -40,6 +40,14 @@ OWNS 엣지만 그래프에 두기로 결정함 → 매칭 실패 후보 다수 
 - LLM 기반 NER + Relation Extraction
 - Pydantic 검증 → Neo4j 적재
 - 추출 품질 평가셋 만들기
+- 진입 전 결정 재검토: **OWNS 엣지의 `as_of` dedupe 정책**
+  - v0 쿼리(`graph/queries.py`)는 같은 (source, target) 쌍에 여러 as_of 엣지가
+    있으면 최신 1개로 collapse한다. v0는 단일 연차 사업보고서 사이클이라
+    실제로 발화하지 않았음.
+  - v1에서 뉴스/지분공시가 들어오면 같은 관계의 시점별 변동이 그래프에 다수
+    누적됨. "최신 collapse"가 여전히 옳은 기본값인지, 또는 시점 슬라이스
+    파라미터(`as_of_at: date | None = None`)를 도입할지 재검토.
+  - 결정 시 `graph/queries.py` 모듈 docstring 갱신 + 필요 시 ADR 신규 작성.
 
 ## v2: Entity Resolution
 - 1차: string normalization + corp_code 매칭
@@ -60,6 +68,14 @@ OWNS 엣지만 그래프에 두기로 결정함 → 매칭 실패 후보 다수 
 - 엣지 가중치 기반 점수 감쇠
 - Streamlit 워크벤치 통합
 - 평가: 과거 위기 사건 백테스트
+- 진입 전 결정 재검토: **읽기 쿼리(`graph/queries.py`)의 깊이·방향성 의도된 한계**
+  - v0 구현은 `get_subsidiaries`가 1-hop만 반환(손자회사 미포함),
+    `get_within_2hop`이 방향 무시·고정 깊이 2. Streamlit 시각화·기본 탐색에는
+    충분하지만 충격 전파는 transitive 자손 + 사이클 안전 traversal이 필요.
+  - 검토 항목: (a) `get_subsidiaries(transitive=True, max_depth=N)` 옵션,
+    (b) 방향 인지(`outbound_only` / `inbound_only`)와 깊이 인자를 노출한
+    propagation 전용 쿼리 신설 여부, (c) 사이클 처리(상호 출자) 정책.
+  - 결과 모델(`SubsidiaryRow` 등)이 v3 도구의 입력으로 충분한지도 함께 점검.
 - 진입 전 결정 재검토: **OWNS `relation_type` 임계값 (ADR 0006)**
   - v0에서 단순 % 휴리스틱(50/20/0)으로 박혔음. 충격 전파 정확도가 분류에
     민감한지 백테스트로 측정.

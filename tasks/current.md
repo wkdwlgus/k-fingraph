@@ -74,11 +74,15 @@ Streamlit으로 그래프 시각화. 7일.
 
 ## Day 5: 마일스톤 점검 + 쿼리 구현
 
-- [ ] **점검**: 그래프에 데이터가 의미있게 들어갔는가? 빠진 부분은? 일정 재조정 필요?
-- [ ] Cypher 쿼리 3종 구현 + 테스트
-  - [ ] `get_subsidiaries(ticker)`
-  - [ ] `find_common_parent(ticker_a, ticker_b)`
-  - [ ] `get_within_2hop(ticker)`
+- [x] **점검**: 데이터 의미있음(Company 200/OWNS 236, hub-and-spoke 검증), 비상장
+  누락은 ADR 0008로 의도된 trade-off, 일정 재조정 불요 → `docs/progress.md` 기록
+- [x] Cypher 쿼리 3종 구현 + 테스트 (`src/k_fingraph/graph/queries.py`,
+  결과 모델은 `src/k_fingraph/schemas/queries.py`, 통합 테스트 13건)
+  - [x] `get_subsidiaries(ticker, *, relation_types=(SUBSIDIARY,))`
+  - [x] `find_common_parents(ticker_a, ticker_b)` — 단수→복수 (공동 부모 N개 가능)
+  - [x] `get_within_2hop(ticker)` — 방향 무시, Streamlit 시각화용
+- [x] v0 한계 2건을 backlog 트리거로 박음 — v1: as_of dedupe 정책 / v3: 쿼리
+  깊이·방향성
 
 ## Day 6: Streamlit UI
 

@@ -85,6 +85,19 @@ uv run pytest -m e2e
 
 `pytest -m e2e`까지 통과하면 Neo4j Aura, DART, OpenAI 모두 살아있다는 뜻.
 
+## Streamlit 워크벤치 실행
+
+v0 워크벤치는 KOSPI 200 OWNS 그래프가 적재된 Neo4j(Aura 또는 로컬)를 가리키는
+`.env`가 있어야 동작한다.
+
+```bash
+uv run streamlit run src/k_fingraph/interfaces/streamlit_app.py
+```
+
+기본 포트 8501에서 실행된다. 사이드바에서 워크플로우 3종(자회사 조회 / 공통
+부모 찾기 / 2-hop 부분그래프) 중 하나를 선택하고 종목을 고르면 결과 표 + 그래프가
+표시된다. 첫 진입 시 회사 인덱스(KOSPI 200) 로드에 1~2초 소요(이후 캐시).
+
 ## Troubleshooting Setup
 
 ### Neo4j Aura 연결 실패

@@ -167,6 +167,44 @@
 - 다음: Day 5 잔여 — 위 쿼리 함수의 Streamlit 어댑터(Day 6 같이 묶을지 고려),
   Day 6 — Streamlit 워크벤치 v0 + pyvis 시각화
 
+## 2026-05-03 (Day 6 — Streamlit 워크벤치)
+
+- 워크벤치 단일 페이지 구현 — `src/k_fingraph/interfaces/streamlit_app.py`.
+  사이드바 라디오로 워크플로우 3종 분기, KOSPI 200 selectbox로 종목 선택,
+  결과 표는 `st.dataframe`, 2-hop만 그래프 시각화. Neo4j 클라이언트는
+  `@st.cache_resource`, 회사 인덱스는 `@st.cache_data`로 세션 내 1회 로드
+- 시각화 라이브러리는 **pyvis가 아니라 Plotly + networkx**로 채택. 백로그에
+  스캐폴딩 시점부터 박혀 있던 pyvis는 비교 없이 들어온 default였고, 다음
+  근거로 갈아탐: (a) `st.plotly_chart`가 1급 시민이라 HTML 임베딩보다 정합성
+  높음, (b) Plotly는 Streamlit 표준이라 v3 도구 시각화·인터랙션 확장 시
+  코드 일관성 유지, (c) Plotly + networkx 모두 stdlib급 유지보수.
+  v0 demo 단계에서 시각화 KPI를 정의할 수 없어 정식 ADR 4단계는 풀지 않고,
+  v3 진입 시 인터랙션 요구가 분명해지면 정식 ADR로 supersede 결정. 트리거는
+  `tasks/backlog.md` v3 섹션 "그래프 시각화 라이브러리 정식 선택"에 박힘
+- `_viz.subgraph_to_plotly_figure` — networkx `spring_layout(seed=42)` 결정론
+  배치 + relation_type별 색상 line trace + hover 정보 marker overlay + 방향
+  화살표 annotation. center 노드는 gold + 큰 마커
+- `_company_index` — Cypher 한 방으로 Company 200건 로드, ticker exact >
+  prefix > name substring 우선순위로 검색 (지금은 selectbox만 쓰지만, universe
+  확장 시 autocomplete 전환 부담 없게)
+- 의존성 추가: `streamlit`, `plotly`, `networkx` + 외부 라이브러리 typed-marker
+  부재로 mypy override 신설 (네 라이브러리 모두 ignore_missing_imports)
+- 수동 브라우저 검증(localhost:8765, 실제 Aura 데이터):
+  - 자회사 조회: LG화학 → LG에너지솔루션 81.84% (Day 4 검증값과 일치)
+  - 공통 부모: 삼성전자 + 삼성바이오로직스 → 삼성물산 (한국 그룹 지배구조 상식)
+  - 2-hop: 삼성화재 → 노드 47, 엣지 79, Plotly figure 79개 화살표 annotation
+  - 사용 중 발견 — 공통 부모 패널의 selectbox default가 sorted-by-name 첫
+    두 개(삼성물산·삼성바이오로직스)로 들어가 의도 없는 무결과를 보여줌 →
+    placeholder 진입(미선택 시 안내 캡션)으로 패치
+- 단위 테스트 13건 신규(`tests/unit/interfaces/`) — search 우선순위 8건 +
+  Plotly figure 구조(빈 그래프·고립 center·다중 relation_type 색상 분리·
+  화살표 annotation 수·center 색상 강조) 5건. 통합 테스트는 추가 없음
+  (Streamlit UI 자체는 통합 테스트 영역 밖, 백엔드 쿼리는 Day 5에서 검증)
+- 검증: ruff 0 / mypy 0 / pytest -m "not e2e" 149 passed
+- `docs/setup.md`에 워크벤치 실행 명령(`uv run streamlit run ...`) 추가
+- 다음: Day 7 — README/스크린샷 정리, troubleshooting.md 사례 보강, v0 완료
+  태그(`v0.1.0`), v0.5 sprint 진입 절차
+
 ## 다음 마일스톤
 
 - [ ] **v0 (MVP-zero)**: KOSPI 200 노드 + 지분 엣지 + Cypher 3개 통과 + Streamlit 시각화 (목표 7일)

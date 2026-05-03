@@ -86,10 +86,16 @@ Streamlit으로 그래프 시각화. 7일.
 
 ## Day 6: Streamlit UI
 
-- [ ] Streamlit 워크벤치 v0
-- [ ] pyvis 그래프 시각화 컴포넌트
-- [ ] 종목 검색 + 쿼리 3종을 드롭다운으로 노출
-- [ ] 결과 표 + 그래프 + 출처 표시
+- [x] Streamlit 워크벤치 v0 (`src/k_fingraph/interfaces/streamlit_app.py`,
+  사이드바 라디오로 워크플로우 3종 + 회사 selectbox 200건)
+- [x] Plotly + networkx 그래프 시각화 컴포넌트 (pyvis에서 갈아탐 — 사유:
+  Streamlit 네이티브 통합·미래 인터랙션 확장. 정식 ADR은 v3 진입 시 `tasks/
+  backlog.md` v3 섹션의 "그래프 시각화 라이브러리 정식 선택" 트리거 참조)
+- [x] 종목 검색 + 쿼리 3종을 드롭다운으로 노출 (200개라 selectbox로 충분,
+  `_company_index` 검색 헬퍼는 universe 확장 시 autocomplete으로 전환 가능)
+- [x] 결과 표 + 그래프 + 출처 표시 (모든 결과에 DART `source_id` 컬럼/툴팁)
+- [x] 수동 브라우저 검증 — 자회사 조회·공통 부모·2-hop 골든패스 동작 확인.
+  공통 부모 패널은 의도 없는 default 조합 방지를 위해 placeholder 진입 적용
 
 ## Day 7: 마감
 

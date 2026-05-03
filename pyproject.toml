@@ -7,8 +7,11 @@ requires-python = ">=3.12,<3.13"
 dependencies = [
     "httpx>=0.28.1",
     "neo4j>=5.23",
+    "networkx>=3.6.1",
+    "plotly>=6.7.0",
     "pydantic>=2.7",
     "pydantic-settings>=2.3",
+    "streamlit>=1.57.0",
 ]
 
 [dependency-groups]
@@ -43,6 +46,12 @@ files = ["src"]
 [[tool.mypy.overrides]]
 module = "tests.*"
 ignore_errors = true
+
+# Visualization / dataframe libraries ship without py.typed; the workbench
+# code already validates inputs through Pydantic before handing them off.
+[[tool.mypy.overrides]]
+module = ["networkx", "networkx.*", "plotly", "plotly.*", "pandas", "pandas.*"]
+ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

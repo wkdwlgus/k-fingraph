@@ -1,4 +1,11 @@
-# Current Sprint: v0.5 (적재 universe 확장)
+# Current Sprint: v0.5 (적재 universe 확장) — ✅ 마감 (2026-05-04, tag `v0.5.0`)
+
+> 결과: 회사 200 → 2,659, OWNS 236 → 2,347 (+9.9×), (A) 매칭 실패 338 → 181
+> (-46%, 부분 달성). 정직한 분석은 ADR 0009 + `docs/progress.md` v0.5 섹션.
+> Streamlit selectbox UX 체감은 `tasks/backlog.md` 잡일 풀로 이관.
+>
+> 다음 sprint 미정 — backlog의 v1(뉴스 추출), v2(ER) 중 진입 결정 시
+> 본 파일을 새 sprint 헤더로 갈아끼우고 `/plan` 시작.
 
 목표: 적재 universe를 KOSPI 200에서 **전체 KOSPI + KOSDAQ**으로 확장하여,
 v0에서 매칭 실패로 폐기된 후보 중 (A) 종류(다른 상장사라 매칭 실패)를 즉시

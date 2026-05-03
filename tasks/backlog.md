@@ -2,38 +2,12 @@
 
 > 미래 작업 풀. 우선순위 매기지 않음 (스프린트 시작 시 `current.md`로 이동).
 
-## v0.5: 적재 universe 확장 (KOSPI 200 → 전체 KOSPI + KOSDAQ)
+## ✅ v0.5: 적재 universe 확장 — 완료 (2026-05-04, tag `v0.5.0`)
 
-v0 demo 직후, v1 진입 전에 짧게 진행. v0 적재 정책(ADR 0007)이 KOSPI 200끼리의
-OWNS 엣지만 그래프에 두기로 결정함 → 매칭 실패 후보 다수 폐기 발생. 이 중
-**(A) 다른 상장사라서 매칭 실패한 것**(전체 KOSPI ~900 + KOSDAQ ~1500)을 universe
-확장으로 즉시 해소.
-
-비상장사·외국 법인·개인·SPC 등 **(B) schema 한계로 매칭 실패한 것**은 본 sprint
-범위 밖이며, schema 확장 sprint(v3 Person, v4 AuditFirm 등)에서 점진 해소된다.
-
-### 단위
-
-- KRX 정보데이터시스템에서 KOSPI 전 종목·KOSDAQ 전 종목 수집 (v0의 KOSPI 200
-  수집과 같은 EUC-KR → UTF-8 변환 절차)
-- 각 종목 → DART corp_code 매핑 (v0의 `kospi200.py` 매핑 로직 재사용 가능)
-- 종목 메타에 `market` 구분(KOSPI / KOSDAQ) 부착
-- ADR 0007의 적재 필터 갱신: 기존 "KOSPI 200끼리만 적재" → "확장 universe(KOSPI
-  전체 + KOSDAQ)끼리만 적재"
-- 확장 universe로 forward + reverse OWNS 재추출·재적재
-- v0 적재 후 매칭률 통계와 비교: (A) 종류 매칭 실패가 얼마나 줄었는지 정량
-  측정 (`docs/progress.md`에 기록)
-
-### 진입 트리거
-
-- v0 마감(`v0.1.0` 태그) 직후
-- v0 적재 후 매칭률 통계가 측정되어 (A) 종류 폐기 후보 수가 손에 있는 상태
-
-### 결정 갱신 필요
-
-- ADR 0007 supersede 또는 갱신: universe 정의가 바뀜 (KOSPI 200 → 확장 universe)
-- `docs/schema.md`의 `Company.market` enum은 이미 KOSPI/KOSDAQ/KONEX를 포함하므로
-  schema 변경 없음
+회사 노드 200 → 2,659, OWNS 엣지 236 → 2,347 (+9.9×). 매칭 실패 (A) 338 → 181
+(-46%, 부분 달성 — 잔여는 상장폐지 + DART historical stock_code 구조).
+결과 분석은 ADR 0009 + `docs/progress.md` v0.5 섹션. Streamlit selectbox 2,659
+옵션 UX 체감은 본 sprint 안에서 결정 보류 → 아래 "잡일 풀"로 이관.
 
 ## v1: 뉴스 추출 파이프라인 (GraphRAG indexing)
 - 뉴스 RSS 수집 (한경, 매경 등)
@@ -140,3 +114,10 @@ OWNS 엣지만 그래프에 두기로 결정함 → 매칭 실패 후보 다수 
 - API 응답 스키마 OpenAPI 스펙 문서화
 - Dockerfile + docker-compose
 - GitHub Actions CI
+- **Streamlit selectbox UX 체감 결정 (v0.5에서 보류)** — universe 확장으로
+  selectbox 옵션이 200 → 2,659가 됐다. 코드/데이터 측 검증은 완료됨
+  (인덱스 1.86초 로드, search 1ms 미만, 페이지 렌더 정상). 시각 UX는 데스크톱
+  브라우저로 직접 확인이 필요하며 견딜 만하면 그대로 두고, 답답하면
+  `_company_index.search_companies` 헬퍼를 활용해 autocomplete 패턴(`st.text_input`
+  + 동적 결과 리스트)으로 전환. 검색 헬퍼는 v0에서 미리 분리해 둠
+  (`src/k_fingraph/interfaces/_company_index.py`)
